@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+<h:head>
+	<title>Angular-gantt</title>
+
+
+</h:head>
+<h:body>
+	<!--<h3>Angular-gantt with JSF</h3>-->
+	<!--<h:form>-->
+		<!--<h:inputText id="data" value="#{ganttBean.data}"></h:inputText>-->
+		<!--<h:commandButton value="Save" action="gantt"></h:commandButton>-->
+	<!--</h:form>-->
+
+	<h3>File chooser:</h3>
+	<h:form enctype="multipart/form-data">
+		<h:inputFile id="fileUploader" value="#{ganttBean.file}" validator="#{ganttBean.validate}">
+			<!--<f:ajax listener="#{ganttBean.uploadExcel}" render="message"></f:ajax>-->
+		</h:inputFile>
+        <!--<h:message id="message" for="fileUploader"></h:message>-->
+        <h:commandButton value="Upload" action="#{ganttBean.uploadExcel}"/>
+	</h:form>
+    
+</h:body>
+</html>
