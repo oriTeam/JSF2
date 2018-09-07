@@ -43,4 +43,14 @@
 		<url-pattern>*.xhtml</url-pattern>
 	</servlet-mapping>
 
+    <context-param>
+        <param-name>primefaces.UPLOADER</param-name>
+        <param-value>auto</param-value>
+    </context-param>
+    <listener>
+        <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
+    </listener>
+
+
+
 </web-app>

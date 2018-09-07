@@ -35,11 +35,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-			<groupId>javax.servlet.jsp</groupId>
-			<artifactId>jsp-api</artifactId>
-			<version>2.1</version>
-		</dependency>
 
 		<dependency>
 			<groupId>com.sun.el</groupId>
@@ -67,9 +62,21 @@
             <version>3.17</version>
         </dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.primefaces/primefaces -->
+		<dependency>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+			<version>6.0</version>
+		</dependency>
+
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>javax.servlet.jsp-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
 
 
-    </dependencies>
+	</dependencies>
 
 	<build>
 		<finalName>JavaServerFaces</finalName>

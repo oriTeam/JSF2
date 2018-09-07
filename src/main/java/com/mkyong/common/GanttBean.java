@@ -9,6 +9,7 @@ import org.apache.commons.io.FileUtils;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import java.io.IOException;
 import java.util.Scanner;
@@ -21,6 +22,10 @@ import javax.faces.validator.ValidatorException;
 import javax.servlet.http.Part;
 import javax.xml.bind.ValidationException;
 
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
+
+
 /**
  *
  * @author nkt-pvt
@@ -28,7 +33,25 @@ import javax.xml.bind.ValidationException;
 
 @ManagedBean(name = "ganttBean")
 @SessionScoped
-public class GanttBean extends AbstractBean {
+public class GanttBean extends AbstractBean{
+
+    private UploadedFile excelFile;
+
+    public void upload(FileUploadEvent e) {
+        this.excelFile = e.getFile();
+//        File newFile = (File) this.file;
+//        System.out.println(newFile.toString());
+        System.out.println("Uploaded File Name Is :: " +
+                this.excelFile.getFileName() +
+                " :: Uploaded File Size :: " + this.excelFile.getSize());
+        if(this.excelFile != null) {
+            FacesMessage message = new FacesMessage("Succesful", this.excelFile.getFileName() + " is uploaded.");
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        }
+    }
+
+
+
     private Part file;
     private static final String FILENAME = "/home/vantrong291/Documents/updatedData.txt";
 
@@ -47,7 +70,7 @@ public class GanttBean extends AbstractBean {
             System.out.println(ex);
         }
     }
-    
+
     @Override
     GanttEntity retrieveData(){
         //      do something to retieve data
@@ -57,14 +80,16 @@ public class GanttBean extends AbstractBean {
         return gantt;
     }
 
-    public String uploadExcel(){
+    public String uploadExcel(FileUploadEvent e){
         // get fileContent
         try {
-            Scanner scanner = new Scanner(file.getInputStream());
+            this.excelFile = e.getFile();
+            Scanner scanner = new Scanner(excelFile.getInputstream());
             String fileData = scanner.useDelimiter("\\A").next();
             scanner.close();
             GanttEntity ganttEntity = new GanttEntity(fileData);
             updateData(ganttEntity);
+            System.out.print(fileData);
             return "success";
         }
         catch (IOException ex) {
@@ -97,7 +122,7 @@ public class GanttBean extends AbstractBean {
     public Part getFile() {
         return file;
     }
-
+//
     public void setFile(Part file) {
         this.file = file;
     }

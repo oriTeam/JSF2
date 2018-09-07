@@ -10,7 +10,6 @@
           <element id="library" level="project" name="Maven: com.sun.faces:jsf-api:2.2.11" />
           <element id="library" level="project" name="Maven: com.sun.faces:jsf-impl:2.2.11" />
           <element id="library" level="project" name="Maven: javax.servlet:jstl:1.2" />
-          <element id="library" level="project" name="Maven: javax.servlet.jsp:jsp-api:2.1" />
           <element id="library" level="project" name="Maven: com.sun.el:el-ri:1.0" />
           <element id="library" level="project" name="Maven: commons-io:commons-io:2.6" />
           <element id="library" level="project" name="Maven: org.apache.poi:poi:3.17" />
@@ -21,6 +20,8 @@
           <element id="library" level="project" name="Maven: org.apache.xmlbeans:xmlbeans:2.6.0" />
           <element id="library" level="project" name="Maven: stax:stax-api:1.0.1" />
           <element id="library" level="project" name="Maven: com.github.virtuald:curvesapi:1.04" />
+          <element id="library" level="project" name="Maven: org.primefaces:primefaces:6.0" />
+          <element id="library" level="project" name="Maven: javax.servlet.jsp:javax.servlet.jsp-api:2.3.1" />
         </element>
       </element>
       <element id="directory" name="META-INF">
