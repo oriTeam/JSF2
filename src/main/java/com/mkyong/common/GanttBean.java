@@ -5,42 +5,35 @@
  */
 package com.mkyong.common;
 
-import org.apache.commons.io.FileUtils;
-
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Scanner;
 import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.validator.ValidatorException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.Part;
-import javax.xml.bind.ValidationException;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
 
 /**
- *
  * @author nkt-pvt
  */
 
 @ManagedBean(name = "ganttBean")
 @SessionScoped
-public class GanttBean extends AbstractBean{
+public class GanttBean extends AbstractBean {
 
     private UploadedFile excelFile;
+    private static final String FILENAME = "/home/vantrong291/Documents/updatedData.txt";
     private String UPLOADFOLDER = "/home/vantrong291/workspaces/java/JavaServerFaces/uploads";
 
     public void upload(FileUploadEvent e) {
@@ -50,7 +43,7 @@ public class GanttBean extends AbstractBean{
         System.out.println("Uploaded File Name Is :: " +
                 this.excelFile.getFileName() +
                 " :: Uploaded File Size :: " + this.excelFile.getSize());
-        if(this.excelFile != null) {
+        if (this.excelFile != null) {
             FacesMessage message = new FacesMessage("Succesful", this.excelFile.getFileName() + " is uploaded.");
             FacesContext.getCurrentInstance().addMessage(null, message);
         }
@@ -58,19 +51,16 @@ public class GanttBean extends AbstractBean{
 
 
 
-    private Part file;
-    private static final String FILENAME = "/home/vantrong291/Documents/updatedData.txt";
-
     @Override
-    void processData(GanttEntity gantt){
+    void processData(GanttEntity gantt) {
         // save data to FILENAME
         String dat = gantt.toString();
         try {
             FileUtils.writeStringToFile(new File(FILENAME), dat);
-            System.out.println("Save");
-            System.out.println(this.data);
-        }
-        catch (IOException ex) {
+//            System.out.println("Save");
+//            System.out.println(this.data);
+
+        } catch (IOException ex) {
             Logger.getLogger(GanttEntity.class.getName()).log(Level.SEVERE, null, ex);
             ex.printStackTrace();
             System.out.println(ex);
@@ -78,7 +68,7 @@ public class GanttBean extends AbstractBean{
     }
 
     @Override
-    GanttEntity retrieveData(){
+    GanttEntity retrieveData() {
         //      do something to retieve data
         //      Ex: load data from db
 
@@ -86,7 +76,7 @@ public class GanttBean extends AbstractBean{
         return gantt;
     }
 
-    public String uploadExcel(FileUploadEvent e){
+    public String uploadExcel(FileUploadEvent e) {
         // get fileContent
         try {
             this.excelFile = e.getFile();
@@ -104,7 +94,6 @@ public class GanttBean extends AbstractBean{
             String fileData = new String(Files.readAllBytes(Paths.get(UPLOADFOLDER + "/" + filename)));
 
 
-
 //            if(this.excelFile != null) {
 //                FacesMessage message = new FacesMessage("Succesful", this.excelFile.getFileName() + " is uploaded.");
 //                FacesContext.getCurrentInstance().addMessage(null, message);
@@ -116,49 +105,34 @@ public class GanttBean extends AbstractBean{
             System.out.print(fileData);
 
             FacesContext context = FacesContext.getCurrentInstance();
-            HttpServletRequest origRequest = (HttpServletRequest)context.getExternalContext().getRequest();
+            HttpServletRequest origRequest = (HttpServletRequest) context.getExternalContext().getRequest();
             String contextPath = origRequest.getContextPath();
             try {
-                FacesContext.getCurrentInstance().getExternalContext().redirect(contextPath  + "test.xhtml");
+                FacesContext.getCurrentInstance().getExternalContext().redirect(contextPath + "test.xhtml");
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
 
             return "success";
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(GanttEntity.class.getName()).log(Level.SEVERE, null, ex);
             return "failed";
-        }
-        catch (NullPointerException ex) {
+        } catch (NullPointerException ex) {
             Logger.getLogger(GanttEntity.class.getName()).log(Level.SEVERE, null, ex);
             return "failed";
         }
 
     }
+
     @Override
     public void pushData(String dat) {
         GanttEntity ganttEntity = GanttEntity.parseToJson(dat);
         processData(ganttEntity);
-    }
+        FacesContext context = FacesContext.getCurrentInstance();
 
-    public void validate(FacesContext context, UIComponent component, Object value) {
-        Part file = (Part) value;
-        if (file.getSize() == 0) {
-            throw new ValidatorException(new FacesMessage("This file is empty! Please choose another file!"));
-        }
-        else if (!file.getContentType().equals("text/plain")) {
-            throw new ValidatorException(new FacesMessage("File is not a text file"));
-        }
+        context.addMessage(null, new FacesMessage("Successful",  "Save") );
 
     }
 
-    public Part getFile() {
-        return file;
-    }
-//
-    public void setFile(Part file) {
-        this.file = file;
-    }
 
 }

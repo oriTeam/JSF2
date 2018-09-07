@@ -3,8 +3,9 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough" xmlns:f="http://xmlns.jcp.org/jsf/core"
->
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 
 <h:head>
     <script type='text/javascript' src="https://unpkg.com/angular@^1.6.4/angular.js"></script>
@@ -55,10 +56,11 @@
         </div>
     </div>
     <h:form id="updateForm">
-        <h:inputText id="updateData" binding="#{updateData}"></h:inputText>
-        <h:commandButton value="Save" action="#{ganttBean.pushData(updateData.value)}">
+        <p:growl id="growl" showDetail="true" sticky="true" />
+        <p:inputText id="updateData" binding="#{updateData}"></p:inputText>
+        <p:commandButton value="Save" actionListener="#{ganttBean.pushData(updateData.value)}" update="growl">
             <f:ajax execute="updateData" render="ganttChart"></f:ajax>
-        </h:commandButton>
+        </p:commandButton>
     </h:form>
     <script type="text/javascript">
         let ganttContainer = document.getElementById("gantt");
