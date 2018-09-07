@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 import javax.xml.bind.ValidationException;
 
@@ -87,9 +88,23 @@ public class GanttBean extends AbstractBean{
             Scanner scanner = new Scanner(excelFile.getInputstream());
             String fileData = scanner.useDelimiter("\\A").next();
             scanner.close();
+//            if(this.excelFile != null) {
+//                FacesMessage message = new FacesMessage("Succesful", this.excelFile.getFileName() + " is uploaded.");
+//                FacesContext.getCurrentInstance().addMessage(null, message);
+//            }
             GanttEntity ganttEntity = new GanttEntity(fileData);
             updateData(ganttEntity);
-            System.out.print(fileData);
+            //  System.out.print(fileData);
+
+            FacesContext context = FacesContext.getCurrentInstance();
+            HttpServletRequest origRequest = (HttpServletRequest)context.getExternalContext().getRequest();
+            String contextPath = origRequest.getContextPath();
+            try {
+                FacesContext.getCurrentInstance().getExternalContext().redirect(contextPath  + "test.xhtml");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
             return "success";
         }
         catch (IOException ex) {
