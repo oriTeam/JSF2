@@ -100,7 +100,7 @@ public class GanttBean extends AbstractBean{
                 IOUtils.closeQuietly(input);
                 IOUtils.closeQuietly(output);
             }
-            String fileData = new String(Files.readAllBytes(Paths.get(UPLOADFOLDER + filename)));
+            String fileData = new String(Files.readAllBytes(Paths.get(UPLOADFOLDER + "/" + filename)));
 
 
 
