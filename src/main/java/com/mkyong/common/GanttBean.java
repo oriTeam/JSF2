@@ -41,6 +41,7 @@ import org.primefaces.model.UploadedFile;
 public class GanttBean extends AbstractBean{
 
     private UploadedFile excelFile;
+    private String UPLOADFOLDER = "/home/vantrong291/workspaces/java/JavaServerFaces/uploads";
 
     public void upload(FileUploadEvent e) {
         this.excelFile = e.getFile();
@@ -92,14 +93,14 @@ public class GanttBean extends AbstractBean{
 
             String filename = FilenameUtils.getName(excelFile.getFileName());
             InputStream input = excelFile.getInputstream();
-            OutputStream output = new FileOutputStream(new File("/home/vantrong291/workspaces/java/JavaServerFaces/uploads", filename));
+            OutputStream output = new FileOutputStream(new File(UPLOADFOLDER, filename));
             try {
                 IOUtils.copy(input, output);
             } finally {
                 IOUtils.closeQuietly(input);
                 IOUtils.closeQuietly(output);
             }
-            String fileData = new String(Files.readAllBytes(Paths.get("/home/vantrong291/workspaces/java/JavaServerFaces/uploads/" + filename)));
+            String fileData = new String(Files.readAllBytes(Paths.get(UPLOADFOLDER + filename)));
 
 
 
