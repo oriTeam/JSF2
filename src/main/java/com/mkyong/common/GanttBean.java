@@ -12,6 +12,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Scanner;
 import java.io.*;
 import java.util.logging.Level;
@@ -23,6 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 import javax.xml.bind.ValidationException;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
@@ -85,16 +89,29 @@ public class GanttBean extends AbstractBean{
         // get fileContent
         try {
             this.excelFile = e.getFile();
-            Scanner scanner = new Scanner(excelFile.getInputstream());
-            String fileData = scanner.useDelimiter("\\A").next();
-            scanner.close();
+
+            String filename = FilenameUtils.getName(excelFile.getFileName());
+            InputStream input = excelFile.getInputstream();
+            OutputStream output = new FileOutputStream(new File("/home/vantrong291/workspaces/java/JavaServerFaces/uploads", filename));
+            try {
+                IOUtils.copy(input, output);
+            } finally {
+                IOUtils.closeQuietly(input);
+                IOUtils.closeQuietly(output);
+            }
+            String fileData = new String(Files.readAllBytes(Paths.get("/home/vantrong291/workspaces/java/JavaServerFaces/uploads/" + filename)));
+
+
+
 //            if(this.excelFile != null) {
 //                FacesMessage message = new FacesMessage("Succesful", this.excelFile.getFileName() + " is uploaded.");
 //                FacesContext.getCurrentInstance().addMessage(null, message);
 //            }
+
+
             GanttEntity ganttEntity = new GanttEntity(fileData);
             updateData(ganttEntity);
-            //  System.out.print(fileData);
+            System.out.print(fileData);
 
             FacesContext context = FacesContext.getCurrentInstance();
             HttpServletRequest origRequest = (HttpServletRequest)context.getExternalContext().getRequest();
