@@ -93,7 +93,8 @@ public class GanttBean extends AbstractBean{
 
             String filename = FilenameUtils.getName(excelFile.getFileName());
             InputStream input = excelFile.getInputstream();
-            OutputStream output = new FileOutputStream(new File(UPLOADFOLDER, filename));
+            File uploadedFile = new File(UPLOADFOLDER, filename);
+            OutputStream output = new FileOutputStream(uploadedFile);
             try {
                 IOUtils.copy(input, output);
             } finally {
