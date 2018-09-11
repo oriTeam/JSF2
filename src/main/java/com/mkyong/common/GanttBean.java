@@ -5,6 +5,7 @@
  */
 package com.mkyong.common;
 
+import java.lang.Number;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -12,6 +13,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.context.FacesContext;
@@ -21,6 +25,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.FileUtils;
 
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
@@ -29,11 +38,6 @@ import com.mkyong.pojo.ExcelWorksheet;
 
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 
 /**
@@ -103,8 +107,8 @@ public class GanttBean extends AbstractBean {
                 IOUtils.closeQuietly(input);
                 IOUtils.closeQuietly(output);
             }
-            String fileData = new String(Files.readAllBytes(Paths.get(UPLOADFOLDER + "/" + filename)));
-
+//            String fileData = new String(Files.readAllBytes(Paths.get(UPLOADFOLDER + "/" + filename)));
+            String fileData =  excelToJson(uploadedFile);
 
 //            if(this.excelFile != null) {
 //                FacesMessage message = new FacesMessage("Succesful", this.excelFile.getFileName() + " is uploaded.");
@@ -146,5 +150,99 @@ public class GanttBean extends AbstractBean {
 
     }
 
+    public String excelToJson(File excelFile) {
+        String jsonResult = "";
+        GanttEntity ganttEntity = new GanttEntity();
+        ArrayList<GanttRow> ganttRows = new ArrayList<GanttRow>();
 
+        try {
+            FileInputStream excelInput = new FileInputStream(excelFile);
+            Workbook workbook = new XSSFWorkbook(excelInput);
+            Sheet sheet = workbook.getSheetAt(0);
+            DataFormatter dataFormatter = new DataFormatter();
+
+            Iterator<Row> rowIterator = sheet.iterator();
+
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+                if(row.getRowNum() == 0) {
+                    continue;
+                }
+                Iterator<Cell> cellIterator = row.iterator();
+
+                GanttRow ganttRow = new GanttRow();
+
+                //Name for ganttRow
+                ganttRow.setName(row.getCell(0).getStringCellValue());
+
+                //Create a new ArrayList of Tasks
+                ArrayList<Task> taskArrayList = new ArrayList<Task>();
+
+                //Create a new task
+                String id = getStringValue(row.getCell(1), workbook);
+                String name = getStringValue(row.getCell(1), workbook);
+                String color = "#f5f5f5";
+                String from = getStringValue(row.getCell(2), workbook);
+                String to = getStringValue(row.getCell(3), workbook);
+                String data = getStringValue(row.getCell(1), workbook);
+                int progress_percent = Integer.parseInt(dataFormatter.formatCellValue(row.getCell(4)));
+
+                Task task = new Task(id, name, color, from, to, data, progress_percent);
+
+                taskArrayList.add(task);
+                ganttRow.setTasks(taskArrayList);
+                //add to Rowlist
+                ganttRows.add(ganttRow);
+            }
+        }
+        catch (FileNotFoundException fnfe) {
+            fnfe.fillInStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            ganttEntity.setGanttRows(ganttRows);
+            jsonResult = ganttEntity.toJson();
+        }
+        return jsonResult;
+    }
+
+    public String getStringValue(Cell cell, Workbook workbook) {
+        CellType cellType = cell.getCellTypeEnum();
+        String stringResult = "";
+        switch (cellType){
+            case _NONE:
+                stringResult = "No Data";
+                break;
+            case BOOLEAN:
+                stringResult = new String(new Boolean(cell.getBooleanCellValue()).toString());
+//                stringResult = String.valueOf(cell.getBooleanCellValue());
+                break;
+            case BLANK:
+                stringResult = "No Data";
+                break;
+            case NUMERIC:
+                if(DateUtil.isCellDateFormatted(cell)){
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssZ");
+                    stringResult = dateFormat.format(cell.getDateCellValue());
+                }
+                else {
+                    Double value = cell.getNumericCellValue();
+                    stringResult = new String(value.toString());
+                }
+                break;
+            case STRING:
+                stringResult = cell.getStringCellValue();
+                break;
+            case FORMULA:
+                FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
+                stringResult = String.valueOf(evaluator.evaluate(cell).getNumberValue());
+                break;
+            case ERROR:
+                stringResult = "Error";
+                break;
+        }
+        return stringResult;
+    }
 }

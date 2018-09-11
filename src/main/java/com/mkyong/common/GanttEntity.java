@@ -9,6 +9,7 @@ import java.io.IOException;
 //import java.nio.charset.StandardCharsets;
 //import java.nio.file.Files;
 //import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +27,18 @@ import java.io.FileWriter;
 public class GanttEntity {
 //    String tasks;
 //    String resources;
-    String content;
+    private String content;
+    private ArrayList<GanttRow> ganttRows;
+
+    public String toJson() {
+        String ganttEntity = "[";
+        for(GanttRow ganttRow: this.ganttRows) {
+            ganttEntity += ganttRow.toJson() + ",";
+        }
+        ganttEntity = ganttEntity.substring(0, ganttEntity.length() - 1);
+        ganttEntity += "]";
+        return ganttEntity;
+    }
 
     public GanttEntity(){};
 
@@ -46,6 +58,11 @@ public class GanttEntity {
         return this.content;
     }
 
+    public ArrayList<GanttRow> getGanttRows() {
+        return ganttRows;
+    }
 
-
+    public void setGanttRows(ArrayList<GanttRow> ganttRows) {
+        this.ganttRows = ganttRows;
+    }
 }
