@@ -93,7 +93,7 @@ public class GanttBean extends AbstractBean {
     }
 
     public String uploadExcel(FileUploadEvent e) {
-        // get fileContent
+        // get fileCdontent
         try {
             this.excelFile = e.getFile();
 
@@ -107,18 +107,11 @@ public class GanttBean extends AbstractBean {
                 IOUtils.closeQuietly(input);
                 IOUtils.closeQuietly(output);
             }
-//            String fileData = new String(Files.readAllBytes(Paths.get(UPLOADFOLDER + "/" + filename)));
+            //      String fileData = new String(Files.readAllBytes(Paths.get(UPLOADFOLDER + "/" + filename)));
             String fileData =  excelToJson(uploadedFile);
-
-//            if(this.excelFile != null) {
-//                FacesMessage message = new FacesMessage("Succesful", this.excelFile.getFileName() + " is uploaded.");
-//                FacesContext.getCurrentInstance().addMessage(null, message);
-//            }
-
 
             GanttEntity ganttEntity = new GanttEntity(fileData);
             updateData(ganttEntity);
-            System.out.print(fileData);
 
             FacesContext context = FacesContext.getCurrentInstance();
             HttpServletRequest origRequest = (HttpServletRequest) context.getExternalContext().getRequest();
@@ -145,9 +138,7 @@ public class GanttBean extends AbstractBean {
         GanttEntity ganttEntity = GanttEntity.parseToJson(dat);
         processData(ganttEntity);
         FacesContext context = FacesContext.getCurrentInstance();
-
-        context.addMessage(null, new FacesMessage("Successful",  "Save") );
-
+        context.addMessage(null, new FacesMessage("Save Successfully !!",  "Save Successfully !!") );
     }
 
     public String excelToJson(File excelFile) {
@@ -165,7 +156,7 @@ public class GanttBean extends AbstractBean {
 
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
-                if(row.getRowNum() == 0) {
+                if(row.getRowNum() == 0 || row.getRowNum() == 1) {
                     continue;
                 }
                 Iterator<Cell> cellIterator = row.iterator();

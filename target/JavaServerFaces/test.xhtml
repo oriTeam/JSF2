@@ -28,6 +28,7 @@
 
     <script type='text/javascript' src="https://unpkg.com/angular-gantt@latest"></script>
     <link rel="stylesheet" type="text/css" href="https://unpkg.com/angular-gantt@latest/dist/angular-gantt.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"/>
 
     <script type="text/javascript">
         // <![CDATA[
@@ -57,14 +58,41 @@
     </div>
     <h:form id="updateForm">
         <p:growl id="growl" showDetail="true" sticky="true" />
-        <p:inputText id="updateData" binding="#{updateData}"></p:inputText>
-        <p:commandButton value="Save" actionListener="#{ganttBean.pushData(updateData.value)}" update="growl">
-            <f:ajax execute="updateData" render="ganttChart"></f:ajax>
-        </p:commandButton>
+        <p:inputText id="updateData" type="hidden" class="update-data" binding="#{updateData}"></p:inputText>
+        <!--<p:commandButton id="save-excel-btn" class="save-excel-btn" value="Save" actionListener="#{ganttBean.pushData(updateData.value)}" update="growl">-->
+            <!--<f:ajax execute="updateData" render="ganttChart"></f:ajax>-->
+        <!--</p:commandButton>-->
     </h:form>
+    <table id="hidden-table" class="table-bordered" style="display: none">
+        <thead>
+            <tr>
+                <th>Sprint Name</th>
+                <th>Task Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Percent</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+
+
     <script type="text/javascript">
         let ganttContainer = document.getElementById("gantt");
         ganttContainer.setAttribute("gantt", "");
     </script>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
 </h:body>
 </html>

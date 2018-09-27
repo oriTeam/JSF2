@@ -6,7 +6,6 @@ import java.util.ArrayList;
 public class GanttRow {
     private String name;
     private int height = 3;
-    private boolean sortable = false;
     private String color = "#fff";
     private ArrayList<Task> tasks;
 
@@ -14,7 +13,6 @@ public class GanttRow {
         String ganttRowJson = "{";
         ganttRowJson += "\"name\":\"" + this.name.toString() + "\",";
         ganttRowJson += "\"height\":\"" + Integer.toString(this.height) + "em\",";
-        ganttRowJson += "\"sortable\":\"" + Boolean.toString(this.sortable) + "\",";
         ganttRowJson += "\"color\":\"" + this.color.toString() + "\",";
         ganttRowJson += "\"tasks\":[";
         for(Task task : this.tasks) {
@@ -40,14 +38,6 @@ public class GanttRow {
 
     public void setColor(String color) {
         this.color = color;
-    }
-
-    public boolean isSortable() {
-        return sortable;
-    }
-
-    public void setSortable(boolean sortable) {
-        this.sortable = sortable;
     }
 
     public int getHeight() {

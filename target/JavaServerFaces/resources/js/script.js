@@ -19,17 +19,18 @@
 
     app.controller('Ctrl', ['$scope', function ($scope) {
         $scope.data = ganttData;
-
         $scope.registerApi = function(api) {
             api.core.on.ready($scope, function (api) {
                 // Call API methods and register events.
                 api.tasks.on.moveEnd($scope, function (task){
-                    alert("moveEnd");
+                    console.log("moveEnd");
                     document.getElementById("updateForm:updateData").value = JSON.stringify($scope.data);
+                    datatable_init();
                 });
                 api.tasks.on.resizeEnd($scope, function (task){
-                    alert("resizeEnd");
+                    console.log("resizeEnd");
                     document.getElementById("updateForm:updateData").value = JSON.stringify($scope.data);
+                    datatable_init();
                 });
 
             });
@@ -41,5 +42,48 @@
         };
 
     }]);
+
+    function datatable_init() {
+        var data = JSON.parse($('.update-data').val());
+        console.log(data);
+        $('#hidden-table').DataTable({
+            data : data,
+            columns: [
+                { "data": "name" },
+                { "data": "tasks[0].name" },
+                { "data": "tasks[0].from" },
+                { "data": "tasks[0].to" },
+                { "data": "tasks[0].progress.percent" },
+            ],
+            dom: 'Bfrt',
+            buttons: [
+                {
+                    extend: 'excel',
+                    text: 'Save in excel format',
+                    className: 'exportExcel',
+                    filename: 'UpdatedGanttChart',
+                    exportOptions: {
+                        modifier: {
+                            page: 'all'
+                        }
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    text: 'Save in pdf format',
+                    className: 'exportPdf',
+                    filename: 'UpdatedGanttChart',
+                    exportOptions: {
+                        modifier: {
+                            page: 'all'
+                        }
+                    }
+                }
+            ],
+            destroy: true,
+            searching: false
+        });
+    }
+
 })();
 
