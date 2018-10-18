@@ -156,7 +156,7 @@ public class GanttBean extends AbstractBean {
 
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
-                if(row.getRowNum() == 0 || row.getRowNum() == 1) {
+                if(row.getRowNum() == 0) {
                     continue;
                 }
                 Iterator<Cell> cellIterator = row.iterator();
@@ -164,19 +164,24 @@ public class GanttBean extends AbstractBean {
                 GanttRow ganttRow = new GanttRow();
 
                 //Name for ganttRow
-                ganttRow.setName(row.getCell(0).getStringCellValue());
+                ganttRow.setName(row.getCell(1).getStringCellValue());
 
                 //Create a new ArrayList of Tasks
                 ArrayList<Task> taskArrayList = new ArrayList<Task>();
 
                 //Create a new task
-                String id = getStringValue(row.getCell(1), workbook);
-                String name = getStringValue(row.getCell(1), workbook);
+                String id = getStringValue(row.getCell(0), workbook);
+                String name = getStringValue(row.getCell(0), workbook);
                 String color = "#f5f5f5";
                 String from = getStringValue(row.getCell(2), workbook);
                 String to = getStringValue(row.getCell(3), workbook);
-                String data = getStringValue(row.getCell(1), workbook);
-                int progress_percent = Integer.parseInt(dataFormatter.formatCellValue(row.getCell(4)));
+                String data = getStringValue(row.getCell(0), workbook);
+                String process_string = getStringValue(row.getCell(4), workbook);
+                if(process_string.contains("%")) {
+                    process_string = process_string.replace("%", "");
+                }
+                int progress_percent = (int) Double.parseDouble(process_string);
+                //int progress_percent = Integer.parseInt(dataFormatter.formatCellValue(row.getCell(4)));
 
                 Task task = new Task(id, name, color, from, to, data, progress_percent);
 
@@ -218,10 +223,16 @@ public class GanttBean extends AbstractBean {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssZ");
                     stringResult = dateFormat.format(cell.getDateCellValue());
                 }
+                else if (cell.getCellStyle().getDataFormatString().contains("%")) {
+                    // Detect Percent Values
+                    Double value = cell.getNumericCellValue() * 100;
+                    stringResult = new String(value.toString());
+                }
                 else {
                     Double value = cell.getNumericCellValue();
                     stringResult = new String(value.toString());
-                }
+                };
+
                 break;
             case STRING:
                 stringResult = cell.getStringCellValue();
@@ -233,6 +244,10 @@ public class GanttBean extends AbstractBean {
             case ERROR:
                 stringResult = "Error";
                 break;
+
+                default:
+                    stringResult = cell.getStringCellValue();
+                    break;
         }
         return stringResult;
     }
